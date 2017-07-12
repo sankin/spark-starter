@@ -17,15 +17,15 @@ import com.sankin.spark.words.service.WordCountService;
 @Controller
 public class WebController {
 
-    @Inject
+	@Inject
 	private WordCountService wordCount;
 
-    @RequestMapping(path = "/api/reduceByKey", method = RequestMethod.GET)
-    public ResponseEntity<Map<String, Integer>> words(@RequestParam("data") String data) {
+	@RequestMapping(path = "/api/reduceByKey", method = RequestMethod.GET)
+	public ResponseEntity<Map<String, Integer>> words(@RequestParam("data") String data) {
 		List<String> words = Arrays.asList(data.split(","));
-        return ResponseEntity
+		return ResponseEntity
 				.ok(wordCount.reduceByKey(words));
-    }
+	}
 
 	@RequestMapping(path = "/api/groupBy", method = RequestMethod.GET)
 	public ResponseEntity<Map<String, Long>> sql(@RequestParam("data") String data) {

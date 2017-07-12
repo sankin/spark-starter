@@ -9,6 +9,7 @@ import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class Word implements Serializable {
+	private static final long serialVersionUID = -2727638225141870617L;
 
-    private String word;
+	private String word;
 }
