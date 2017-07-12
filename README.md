@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/sankin/spark-starter.svg?branch=master)](https://travis-ci.org/sankin/spark-starter)
+
 # spark-starter
 
 This example demonstrate the difference in performance between `reduceByKey` and `groupBy` operations when counting simple key-value pairs.
