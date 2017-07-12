@@ -1,9 +1,6 @@
 package com.sankin.spark.words.web;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.sankin.spark.words.model.Word;
 import com.sankin.spark.words.service.WordCountService;
 
 @Controller
@@ -21,17 +17,15 @@ public class WebController {
     @Autowired
 	private WordCountService wordCount;
 
-    @RequestMapping(path = "/api/wordcount", method = RequestMethod.GET)
-    public ResponseEntity<Map<String, Long>> words(@RequestParam("data") String data) {
-
-		// convert [w1, w2, ..., wN] to List<Words>
-        List<Word> words = Arrays
-                .stream(data.split(","))
-                .map(Word::new)
-                .collect(Collectors.toList());
-
+    @RequestMapping(path = "/api/reduceByKey", method = RequestMethod.GET)
+    public ResponseEntity<Map<String, Integer>> words(@RequestParam("data") String data) {
         return ResponseEntity
-				.ok(wordCount.count(words));
+				.ok(wordCount.reduceByKey(data));
     }
 
+	@RequestMapping(path = "/api/groupBy", method = RequestMethod.GET)
+	public ResponseEntity<Map<String, Long>> sql(@RequestParam("data") String data) {
+		return ResponseEntity
+				.ok(wordCount.groupBy(data));
+	}
 }
