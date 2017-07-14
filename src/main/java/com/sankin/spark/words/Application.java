@@ -1,37 +1,29 @@
 package com.sankin.spark.words;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.google.common.collect.ImmutableList;
 import com.sankin.spark.words.service.WordCountService;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner {
 
-	// TODO: replace with read from S3
-	private static final List<String> words = ImmutableList.of("test", "test", "test", "hello", "there");
+	@Value("${input.file}")
+	private String input;
+
+	@Value("${output.location}")
+	private String output;
 
 	@Inject
 	private WordCountService service;
 
 	@Override
 	public void run(String... args) throws Exception {
-
-		System.err.println("reduce by key:");
-		service.reduceByKey(words)
-				.entrySet()
-				.forEach(e -> System.err.println(e.getKey() + " , " + e.getValue()));
-
-		System.err.println("group by key:");
-		service.groupBy(words)
-				.entrySet()
-				.forEach(e -> System.err.println(e.getKey() + " , " + e.getValue()));
+		service.process(input, output);
 	}
 
 	public static void main(String[] args) {
