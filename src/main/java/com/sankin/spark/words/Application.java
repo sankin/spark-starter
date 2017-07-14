@@ -1,47 +1,37 @@
 package com.sankin.spark.words;
 
-import org.apache.spark.SparkConf;
-import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.sql.SparkSession;
-import org.springframework.beans.factory.annotation.Value;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
+
+import com.google.common.collect.ImmutableList;
+import com.sankin.spark.words.service.WordCountService;
 
 @SpringBootApplication
-public class Application {
+public class Application implements CommandLineRunner {
 
-	@Value("${spark.app.name:word-count}")
-	private String appName;
+	// TODO: replace with read from S3
+	private static final List<String> words = ImmutableList.of("test", "test", "test", "hello", "there");
 
-	@Value("${spark.home}")
-	private String sparkHome;
+	@Inject
+	private WordCountService service;
 
-	@Value("${spark.master.uri:local}")
-	private String masterUri;
+	@Override
+	public void run(String... args) throws Exception {
 
-	@Bean
-	public SparkConf sparkConf() {
-		SparkConf sparkConf = new SparkConf()
-				.setAppName(appName)
-				.setSparkHome(sparkHome)
-				.setMaster(masterUri);
+		System.err.println("reduce by key:");
+		service.reduceByKey(words)
+				.entrySet()
+				.forEach(e -> System.err.println(e.getKey() + " , " + e.getValue()));
 
-		return sparkConf;
-	}
-
-	@Bean
-	public JavaSparkContext javaSparkContext() {
-		return new JavaSparkContext(sparkConf());
-	}
-
-	@Bean
-	public SparkSession sparkSession() {
-		return SparkSession
-				.builder()
-				.sparkContext(javaSparkContext().sc())
-				.appName(appName)
-				.getOrCreate();
+		System.err.println("group by key:");
+		service.groupBy(words)
+				.entrySet()
+				.forEach(e -> System.err.println(e.getKey() + " , " + e.getValue()));
 	}
 
 	public static void main(String[] args) {

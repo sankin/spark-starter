@@ -1,4 +1,4 @@
-package com.sankin.spark.words.model;
+package com.sankin.spark.words.service.model;
 
 import java.io.Serializable;
 
